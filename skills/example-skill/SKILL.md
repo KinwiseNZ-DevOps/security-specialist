@@ -43,3 +43,7 @@ When the first real skill is ready:
 2. Add at least 3 behavioural cases to `evals/cases.jsonl` for it.
 3. Run `python scripts/skills_tool.py catalogue`, then `python scripts/skills_tool.py check`.
 4. Delete this folder and its eval cases. Reason: placeholders in a live catalogue mislead agents into routing to nothing.
+
+## Always-on mode
+
+When the plugin is installed, a start-up hook adds [always-on-rules.md](references/always-on-rules.md) to every Claude Code session. The user can say "stop example mode" to pause it, or ask for the saved mode to be set to on, off or auto. The rules file is the single source of those rules; edit it, not a copy.

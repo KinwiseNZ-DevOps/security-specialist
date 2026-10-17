@@ -459,6 +459,45 @@ def catalogue(write):
     return ["README.md: catalogue stale; run `python scripts/skills_tool.py catalogue`"]
 
 
+def validate_always_on():
+    hooks_dir = ROOT / "hooks"
+    config_path = hooks_dir / "always-on.config.json"
+    if not hooks_dir.exists() and not config_path.exists():
+        return []
+    errors = []
+    data, err = load_json(config_path)
+    if err:
+        return [err]
+    for key in ("id", "name", "phrase", "rules"):
+        if not isinstance(data.get(key), str) or not data[key].strip():
+            errors.append(f"hooks/always-on.config.json: {key} is required")
+    if errors:
+        return errors
+    rules = ROOT / data["rules"]
+    if not rules.is_file():
+        errors.append(f"hooks/always-on.config.json: rules file '{data['rules']}' does not exist")
+    else:
+        text = rules.read_text(encoding="utf-8")
+        words = len(text.split())
+        if words > 320:
+            errors.append(f"{data['rules']}: {words} words; keep always-on rules to 320 or fewer, they are paid for in every session")
+        if re.search(r"<[A-Za-z][^<>\n]*>", text):
+            errors.append(f"{data['rules']}: leftover placeholder text")
+    hooks_json, err = load_json(hooks_dir / "hooks.json")
+    if err:
+        errors.append(err)
+    elif "always-on.mjs" not in json.dumps(hooks_json):
+        errors.append("hooks/hooks.json: must run hooks/always-on.mjs")
+    if not (hooks_dir / "always-on.mjs").is_file():
+        errors.append("hooks/always-on.mjs is missing")
+    markers = data.get("autoMarkers", [])
+    if not isinstance(markers, list) or not all(isinstance(m, dict) and m.get("file") for m in markers):
+        errors.append("hooks/always-on.config.json: autoMarkers must be a list of objects with a file")
+    if data.get("defaultMode", "on") not in ("on", "off", "auto"):
+        errors.append("hooks/always-on.config.json: defaultMode must be on, off or auto")
+    return errors
+
+
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
     errors = []
@@ -468,6 +507,7 @@ def main():
         errors += validate_agent_sources()
         errors += validate_agent_contents()
         errors += validate_plugin()
+        errors += validate_always_on()
         errors += dashes()
         errors += strip_terms()
         ship_errors, skipped = ship_checks()

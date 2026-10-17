@@ -1,0 +1,13 @@
+{
+  "id": "example-skills",
+  "name": "Example Skills",
+  "phrase": "example",
+  "rules": "skills/example-skill/references/always-on-rules.md",
+  "defaultMode": "on",
+  "autoDetect": true,
+  "autoMarkers": [
+    {
+      "file": "package.json"
+    }
+  ]
+}
