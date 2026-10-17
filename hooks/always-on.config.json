@@ -9,5 +9,6 @@
     {
       "file": "package.json"
     }
-  ]
+  ],
+  "features": {}
 }

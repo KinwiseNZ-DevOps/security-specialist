@@ -486,15 +486,29 @@ def validate_always_on():
     hooks_json, err = load_json(hooks_dir / "hooks.json")
     if err:
         errors.append(err)
-    elif "always-on.mjs" not in json.dumps(hooks_json):
-        errors.append("hooks/hooks.json: must run hooks/always-on.mjs")
-    if not (hooks_dir / "always-on.mjs").is_file():
-        errors.append("hooks/always-on.mjs is missing")
+    else:
+        raw = json.dumps(hooks_json)
+        if "always-on.mjs" not in raw:
+            errors.append("hooks/hooks.json: must run hooks/always-on.mjs")
+        needed = ["always-on.mjs", "common.mjs"] + (["guard.mjs"] if "guard.mjs" in raw else [])
+        for name in needed:
+            if not (hooks_dir / name).is_file():
+                errors.append(f"hooks/{name} is missing")
     markers = data.get("autoMarkers", [])
     if not isinstance(markers, list) or not all(isinstance(m, dict) and m.get("file") for m in markers):
         errors.append("hooks/always-on.config.json: autoMarkers must be a list of objects with a file")
     if data.get("defaultMode", "on") not in ("on", "off", "auto"):
         errors.append("hooks/always-on.config.json: defaultMode must be on, off or auto")
+    known = {"promptGuard", "editSecurity", "linkGuard", "styleGuard", "sessionLog", "verifyReminder", "autoCommit", "packageGuard", "licenseGuard", "dangerGuard", "secretsGuard"}
+    features = data.get("features", {})
+    if not isinstance(features, dict):
+        errors.append("hooks/always-on.config.json: features must be an object")
+    else:
+        for key, value in features.items():
+            if key not in known:
+                errors.append(f"hooks/always-on.config.json: unknown feature '{key}'")
+            elif not isinstance(value, bool):
+                errors.append(f"hooks/always-on.config.json: feature '{key}' must be true or false")
     return errors
 
 
