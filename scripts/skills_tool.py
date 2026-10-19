@@ -354,8 +354,8 @@ def strip_terms():
     f = ROOT / "reference-content" / "strip-terms.txt"
     if not f.exists():
         return []
-    terms = [l.strip().lower() for l in f.read_text(encoding="utf-8").splitlines()
-             if l.strip() and not l.lstrip().startswith("#")]
+    terms = [line.strip().lower() for line in f.read_text(encoding="utf-8").splitlines()
+             if line.strip() and not line.lstrip().startswith("#")]
     if not terms:
         return []
     targets = [ROOT / n for n in ("README.md", "AGENTS.md")]
