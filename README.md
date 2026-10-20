@@ -1,16 +1,28 @@
 ```
-<Repo name rendered in the standard FIGlet ANSI Shadow font (pyfiglet "ansi_shadow"). One or two words per banner line, left-aligned with no indent, no trailing spaces, and no centring or widening.>
+███████╗███████╗ ██████╗██╗   ██╗██████╗ ██╗████████╗██╗   ██╗
+██╔════╝██╔════╝██╔════╝██║   ██║██╔══██╗██║╚══██╔══╝╚██╗ ██╔╝
+███████╗█████╗  ██║     ██║   ██║██████╔╝██║   ██║    ╚████╔╝
+╚════██║██╔══╝  ██║     ██║   ██║██╔══██╗██║   ██║     ╚██╔╝
+███████║███████╗╚██████╗╚██████╔╝██║  ██║██║   ██║      ██║
+╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝   ╚═╝      ╚═╝
+
+███████╗██████╗ ███████╗ ██████╗██╗ █████╗ ██╗     ██╗███████╗████████╗
+██╔════╝██╔══██╗██╔════╝██╔════╝██║██╔══██╗██║     ██║██╔════╝╚══██╔══╝
+███████╗██████╔╝█████╗  ██║     ██║███████║██║     ██║███████╗   ██║
+╚════██║██╔═══╝ ██╔══╝  ██║     ██║██╔══██║██║     ██║╚════██║   ██║
+███████║██║     ███████╗╚██████╗██║██║  ██║███████╗██║███████║   ██║
+╚══════╝╚═╝     ╚══════╝ ╚═════╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝   ╚═╝
 ```
 
 <div align="center">
 
-# ⚡ <Repo Name>
+# ⚡ Security Specialist
 
-**<One line: what these skills do, for whom>**
+**Skills that reason about a codebase for vulnerabilities and set up automated security scanning in CI, for any agent.**
 
-[![Validate skills](https://github.com/<OWNER>/<REPO>/actions/workflows/validate.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/validate.yml)
+[![Validate skills](https://github.com/KinwiseNZ-DevOps/security-specialist/actions/workflows/validate.yml/badge.svg)](https://github.com/KinwiseNZ-DevOps/security-specialist/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Agent skills](https://img.shields.io/badge/agent_skills-1-8A2BE2)](https://agentskills.io)
+[![Agent skills](https://img.shields.io/badge/agent_skills-3-8A2BE2)](https://agentskills.io)
 [![Format](https://img.shields.io/badge/format-SKILL.md-orange)](https://agentskills.io/specification)
 [![Tooling](https://img.shields.io/badge/tooling-stdlib_only-success)](scripts/skills_tool.py)
 
@@ -30,9 +42,9 @@ Table of contents:
 ---
 
 > [!IMPORTANT]
-> **Principle: <the single sentence every skill in this repo must obey.>**
+> **Principle: never auto-apply a security fix or scanning change, and never invent a finding, a credential, or a CVE that was not actually observed.**
 
-<Two or three sentences: what problems the skills solve, what they are grounded in (official docs or authoritative sources), and that they follow the open [Agent Skills](https://agentskills.io/specification) format. Name the agents they work in, e.g. Claude Code, Codex, Cursor, Copilot, OpenCode, or any SKILL.md-compatible agent.>
+These skills scan a codebase for vulnerabilities the way a security researcher would, and set up automated dependency, static and dynamic scanning in CI/CD. They are grounded in the OWASP Top 10 categories and common framework-specific anti-patterns, and follow the open [Agent Skills](https://agentskills.io/specification) format. They work in Claude Code, Codex, Cursor, Copilot, OpenCode, or any SKILL.md-compatible agent.
 
 ---
 
@@ -42,7 +54,9 @@ Table of contents:
 <!-- catalogue:begin -->
 | Skill | Purpose |
 |---|---|
-| [`example-skill`](skills/example-skill/SKILL.md) | Placeholder skill demonstrating this repository's skill format: the gate, steps, hard rule phrasing and reference layout. |
+| [`security-ci-scanning`](skills/security-ci-scanning/SKILL.md) | Sets up automated security scanning in a CI/CD pipeline: dependency (SCA) audits, static (SAST) scanning, and dynamic (DAST) scanning of a running API or web app. |
+| [`security-code-review`](skills/security-code-review/SKILL.md) | Reasons about a codebase for security vulnerabilities the way a security researcher would: tracing data flow, auditing dependencies and secrets, and reporting findings with severity and confidence. |
+| [`security-specialist`](skills/security-specialist/SKILL.md) | Router and shared guardrails for application security work: reasoning about a codebase for vulnerabilities and setting up automated security scanning in CI/CD. |
 <!-- catalogue:end -->
 
 ---
@@ -52,13 +66,12 @@ Table of contents:
 
 ```mermaid
 flowchart TD
-    R["⚡ <router-skill><br/><what it routes and enforces>"]
-    R --> A["🔍 <skill-a><br/><one-line scope>"]
-    R --> B["🛠️ <skill-b><br/><one-line scope>"]
-    R --> C["✅ <skill-c><br/><one-line scope>"]
+    R["⚡ security-specialist<br/>routes work and enforces shared guardrails"]
+    R --> A["🔍 security-code-review<br/>vulnerability scan, severity and confidence"]
+    R --> B["🛠️ security-ci-scanning<br/>dependency, static and dynamic scanning in CI"]
 ```
 
-<One sentence on the order or priority in which the skills usually apply. Delete this section and the diagram for a repo with a single skill.>
+Most requests start at the router. A manual review usually comes first; automating it in CI comes once the team is happy with what it finds.
 
 ---
 
@@ -71,9 +84,13 @@ flowchart TD
 **Claude Code plugin** (installs the skills and any agent profiles together):
 
 ```text
-/plugin marketplace add <OWNER>/<REPO>
-/plugin install <PLUGIN-NAME>@<MARKETPLACE-NAME>
+/plugin marketplace add KinwiseNZ-DevOps/security-specialist
+/plugin install security-specialist@security-specialist-marketplace
 ```
+**ChatGPT desktop plugin** (local, skills and bundled hooks):
+
+This repo has a portable `plugin.json` manifest and a repo marketplace at `.agents/plugins/marketplace.json`. Open this repo as a trusted project and restart ChatGPT desktop, then install **Security Specialist** from the Plugins Directory. Review and trust bundled hook scripts before they run.
+
 
 Or copy or symlink the `skills/` subfolders you want into your agent's skills directory:
 
@@ -88,18 +105,18 @@ To install supplied Claude Code, GitHub Copilot or Codex profiles into a project
 
 ### Always on
 
-In Claude Code, Example Skills loads a short ruleset into every session as soon as the plugin is installed (replace this with one line on what the rules enforce). It tells you its state at the start of each session and costs roughly 450 tokens.
+In Claude Code, Security Specialist loads a short ruleset into every session as soon as the plugin is installed (never auto-apply a fix, rate severity and confidence separately, never guess a secret). It tells you its state at the start of each session and costs roughly 450 tokens.
 
 | Mode | What it does |
 |---|---|
 | `on` (default) | The rules apply in every session |
-| `auto` | The rules apply only in projects that look relevant: the project files named in `autoMarkers` |
+| `auto` | The rules apply only in projects that look relevant: a `package.json` or `requirements.txt` is found |
 | `off` | The rules do not load |
 
-- Say **"stop example mode"** to pause it for the current session, and **"start example mode"** to resume.
-- Ask Claude to **set the saved mode to on, off or auto**. It writes that word into `~/.claude/.example-skills.mode`. You can also edit that file yourself, and deleting it returns to the default (`on`).
+- Say **"stop security mode"** to pause it for the current session, and **"start security mode"** to resume.
+- Ask Claude to **set the saved mode to on, off or auto**. It writes that word into `~/.claude/.security-specialist.mode`. You can also edit that file yourself, and deleting it returns to the default (`on`).
 - It needs Node on the machine, because the start-up hook runs a small Node script. Without Node the hook quietly does nothing.
-- Other agents have no start-up hook here. Paste `skills/example-skill/references/always-on-rules.md` into that agent's instruction file instead.
+- Other agents have no start-up hook here. Paste `skills/security-specialist/references/always-on-rules.md` into that agent's instruction file instead.
 
 ### Safety checks
 
@@ -116,10 +133,10 @@ The same hooks run a few checks while you work. Each one only asks, warns or add
 | `verifyReminder` | Tells you at the end of a turn if code changed but no tests, lint or analysis ran | Yes |
 | `linkGuard` | Warns about links that return "not found" in Markdown, HTML and JSX files written | No |
 | `styleGuard` | Warns when a reply is over 200 words or uses an em or en dash (built for AI Kiwiniser's style) | No |
-| `sessionLog` | Writes tool names and file names, never content, to `~/.claude/logs/example-skills/` | No |
+| `sessionLog` | Writes tool names and file names, never content, to `~/.claude/logs/security-specialist/` | No |
 | `autoCommit` | Saves tracked changes as a local commit at the end of a turn. It never pushes | No |
 
-Switch any check with `~/.claude/.example-skills.features.json`, for example `{"packageGuard": false, "sessionLog": true}`, or ask Claude to write it. The saved mode (on, off or auto) applies to every check. If several of these plugins are installed, each risky action is checked once, not once per plugin.
+Switch any check with `~/.claude/.security-specialist.features.json`, for example `{"packageGuard": false, "sessionLog": true}`, or ask Claude to write it. The saved mode (on, off or auto) applies to every check. If several of these plugins are installed, each risky action is checked once, not once per plugin.
 
 Privacy: `packageGuard` and `licenseGuard` send package names, and `linkGuard` sends the links it checks, to the public registry or site. Nothing else leaves your machine. Turn those checks off if that is a concern.
 
@@ -132,16 +149,19 @@ Privacy: `packageGuard` and `licenseGuard` send package names, and `linkGuard` s
 **The flow** (this is all most people need):
 
 ```text
-1. "<first phrase>"     → <what happens>
-2. "<second phrase>"    → <what happens>
-3. "<third phrase>"     → <what happens>
+1. "Is this code secure?"                       → Scans and reports findings with severity and confidence
+2. "Set up automated security scanning"          → Proposes CI scanning as a pull request
+3. "Fix this SQL injection"                      → Reviews the specific code and proposes a patch to approve
 ```
 
 **Short phrases that trigger each skill:**
 
 | Just say… | What you get | Skill used |
 |---|---|---|
-| `<short plain phrase>` | <what happens> | *<skill>* |
+| `Scan this repo for vulnerabilities` | A findings report with severity and confidence, grouped by category | *security-code-review* |
+| `Check for exposed secrets or API keys` | A secrets and exposure scan, with safe placeholders correctly ignored | *security-code-review* |
+| `Audit our dependencies for known CVEs` | A dependency audit against the vulnerable-package watchlist | *security-code-review* |
+| `Add Dependabot/CodeQL/DAST scanning to our CI` | A pull request with the scanning workflow and a list of required secrets | *security-ci-scanning* |
 
 > [!NOTE]
 > Skills also trigger on their own when your request matches. In Claude Code you can also invoke one explicitly with `/<skill-name>`, but the plain phrases above are shorter and work across every agent.
@@ -151,7 +171,7 @@ Privacy: `packageGuard` and `licenseGuard` send package names, and `linkGuard` s
 <a id="optional-agent-profiles"></a>
 ## Optional agent profiles
 
-This section applies only when agent definitions were supplied during setup. One main agent handles the repo's workflows through named modes, and an optional helper handles one distinct task. Profiles live under `resources/agents/<host>/`. Other hosts receive the skills only. If no agents were supplied, remove this section and let the skills run directly.
+This section applies only when agent definitions were supplied during setup. No agent profiles are supplied yet; all three skills run directly. See [AGENTS.md](AGENTS.md) for the dated note.
 
 ---
 
@@ -195,13 +215,14 @@ templates/                  local skill scaffolding; ignored and kept off GitHub
 ## 📌 Status and limits
 
 > [!NOTE]
-> - <Known limits, each dated, mirroring the "Known deliberate states" section of AGENTS.md.>
+> - 20 October 2026: skills were authored from condensed, generalised security references (OWASP-style anti-patterns, a code-reasoning review workflow, and CI scanning setup guidance); none has been run against a real vulnerability yet. Reason: first draft awaiting real-world testing.
+> - The vulnerable-package watchlist in `security-code-review` is a dated snapshot; check current advisories for anything it does not cover.
 > - Licensed under MIT (see [LICENSE](LICENSE)).
 
 ---
 
 <div align="center">
 
-**⚡ Built on the [Agent Skills](https://agentskills.io) open format · grounded in <link to the official docs or sources>**
+**⚡ Built on the [Agent Skills](https://agentskills.io) open format · grounded in the [OWASP Top 10](https://owasp.org/Top10/)**
 
 </div>

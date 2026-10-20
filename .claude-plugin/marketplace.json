@@ -1,12 +1,12 @@
 {
-  "name": "<MARKETPLACE-NAME>",
-  "owner": { "name": "<COPYRIGHT HOLDER>" },
-  "description": "<ONE SENTENCE: what this marketplace offers>",
+  "name": "security-specialist-marketplace",
+  "owner": { "name": "KinWise Limited" },
+  "description": "Security code review and CI scanning skills for agent coding assistants",
   "plugins": [
     {
-      "name": "<PLUGIN-NAME>",
+      "name": "security-specialist",
       "source": "./",
-      "description": "<ONE SENTENCE: what the skills do, for whom>"
+      "description": "Skills that reason about a codebase for vulnerabilities and set up automated security scanning in CI"
     }
   ]
 }

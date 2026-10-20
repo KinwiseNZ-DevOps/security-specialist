@@ -3,3 +3,4 @@ __pycache__/
 .DS_Store
 /SETUP.md
 /reference-content/
+/templates/

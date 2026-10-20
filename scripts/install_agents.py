@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Install supplied host agent profiles into an existing project. Stdlib only."""
+
 import argparse
 import shutil
 import sys
@@ -25,8 +26,18 @@ When a task matches a role brief in `agents/codex/`, read the matching brief and
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--host", required=True, choices=HOST_DESTINATIONS, help="Host with a supported native agent profile directory")
-    parser.add_argument("--target", required=True, type=Path, help="Existing project directory to receive profiles")
+    parser.add_argument(
+        "--host",
+        required=True,
+        choices=HOST_DESTINATIONS,
+        help="Host with a supported native agent profile directory",
+    )
+    parser.add_argument(
+        "--target",
+        required=True,
+        type=Path,
+        help="Existing project directory to receive profiles",
+    )
     return parser.parse_args()
 
 
@@ -47,25 +58,36 @@ def main():
         print(f"No agent profiles supplied for {args.host}; nothing to install.")
         return 0
     if len(files) > 2:
-        print(f"ERROR: {args.host} has {len(files)} profiles; supply one main workflow agent and at most one helper.")
+        print(
+            f"ERROR: {args.host} has {len(files)} profiles; supply one main workflow agent and at most one helper."
+        )
         return 2
     workflows = [
-        path for path in files
+        path
+        for path in files
         if path.parent.name == "skill-specific"
         and profile_stem(path).endswith("-workflow")
     ]
     if len(workflows) != 1:
-        print(f"ERROR: {args.host} needs exactly one skill-specific main workflow agent ending in -workflow.")
+        print(
+            f"ERROR: {args.host} needs exactly one skill-specific main workflow agent ending in -workflow."
+        )
         return 2
 
     skills = ROOT / "skills"
-    skill_names = [path.name for path in skills.iterdir() if path.is_dir()] if skills.is_dir() else []
+    skill_names = (
+        [path.name for path in skills.iterdir() if path.is_dir()]
+        if skills.is_dir()
+        else []
+    )
     invalid_names = []
     for source in files:
         stem = profile_stem(source)
         scope = source.relative_to(source_root).parts[0]
         if not valid_profile_name(stem, scope, skill_names):
-            expected = "shared-<role>" if scope == "shared" else "<owning-skill-name>-<role>"
+            expected = (
+                "shared-<role>" if scope == "shared" else "<owning-skill-name>-<role>"
+            )
             invalid_names.append(f"{source}: expected {expected}")
     if invalid_names:
         for message in invalid_names:
@@ -94,7 +116,9 @@ def main():
     routing_path = target / "AGENTS.md"
     routing_text = None
     if args.host == "codex":
-        current = routing_path.read_text(encoding="utf-8") if routing_path.exists() else ""
+        current = (
+            routing_path.read_text(encoding="utf-8") if routing_path.exists() else ""
+        )
         has_start, has_end = START in current, END in current
         if has_start != has_end:
             print(f"ERROR: incomplete managed routing markers in {routing_path}")
@@ -104,7 +128,12 @@ def main():
             _, after = remainder.split(END, 1)
             routing_text = before.rstrip() + "\n\n" + CODEX_ROUTING + after
         else:
-            routing_text = current.rstrip() + ("\n\n" if current.strip() else "") + CODEX_ROUTING + "\n"
+            routing_text = (
+                current.rstrip()
+                + ("\n\n" if current.strip() else "")
+                + CODEX_ROUTING
+                + "\n"
+            )
 
     destination.mkdir(parents=True, exist_ok=True)
     installed_count = 0

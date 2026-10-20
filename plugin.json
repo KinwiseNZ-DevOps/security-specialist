@@ -1,0 +1,23 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "security-specialist",
+  "version": "0.1.0",
+  "description": "Security code review and CI scanning skills for agent coding assistants.",
+  "author": {
+    "name": "KinWise Limited"
+  },
+  "repository": "https://github.com/KinwiseNZ-DevOps/security-specialist",
+  "license": "MIT",
+  "keywords": ["security", "owasp", "vulnerability-scanning", "ci-cd", "agent-skills"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Security Specialist",
+        "shortDescription": "Scan code for vulnerabilities and set up CI security scanning.",
+        "longDescription": "Skills that reason about a codebase for security vulnerabilities the way a security researcher would, and set up automated dependency, static and dynamic scanning in CI/CD.",
+        "developerName": "KinWise Limited",
+        "category": "Productivity"
+      }
+    }
+  }
+}

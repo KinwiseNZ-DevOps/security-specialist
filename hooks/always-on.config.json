@@ -1,13 +1,16 @@
 {
-  "id": "example-skills",
-  "name": "Example Skills",
-  "phrase": "example",
-  "rules": "skills/example-skill/references/always-on-rules.md",
+  "id": "security-specialist",
+  "name": "Security Specialist",
+  "phrase": "security",
+  "rules": "skills/security-specialist/references/always-on-rules.md",
   "defaultMode": "on",
   "autoDetect": true,
   "autoMarkers": [
     {
       "file": "package.json"
+    },
+    {
+      "file": "requirements.txt"
     }
   ],
   "features": {}

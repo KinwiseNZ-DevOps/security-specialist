@@ -42,13 +42,14 @@ Checks: frontmatter, name/folder match, description length and trigger, body und
 
 - `skills/<name>/SKILL.md`: the only source of skill content. Folder name equals frontmatter `name`.
 - `resources/agents/`: optional, host-native profile sources consumed by `scripts/install_agents.py`. Shared agent names use the `shared-` namespace; skill-specific agent names use `<owning-skill-slug>-<role>`. No `*.agent.md` files for a host means there are no profiles to install for that host.
+- `plugin.json`: the portable Agent Plugins manifest for ChatGPT and Codex. `.agents/plugins/marketplace.json` exposes this repo as a local ChatGPT desktop marketplace.
 - `.claude-plugin/plugin.json` and `marketplace.json`: the Claude Code plugin manifest and single-plugin marketplace. The `agents` array lists each Claude Code profile under `resources/agents/claude-code/`. Reason: without the key, Claude Code scans a top-level `agents/` folder and would load Codex briefs as subagents.
 - `.github/agents/`, `.claude/agents/`, and `agents/codex/`: optional installed host profiles and Codex role briefs in a target project, never in this repo. The installer creates these folders only when it has profiles to copy and never replaces an existing different file.
-- New skills follow the house format that existing skills embody: folder name equals frontmatter `name`; frontmatter, gate, steps, hard rules. `<add repo-specific canonical sources, generated artefacts that must not be hand-edited, and editing rules, each with a reason>`
+- New skills follow the house format that existing skills embody: folder name equals frontmatter `name`; frontmatter, gate, steps, hard rules. Reference files hold the detection patterns, language-specific examples, and templates; a `SKILL.md` links to them rather than inlining their depth. Reason: copies drift.
 - `SETUP.md`, `templates/`, and `reference-content/` are local setup material that stays ignored and outside the Git index when a repo is published. Reason: the maintainer needs these files for future work, while public commits must exclude bootstrap material and private sources.
-- Custom to this repo: `<e.g. shared guardrails file paths, router links, doc-source rules>`
+- Custom to this repo: the router `security-specialist` links both specialist skills and names the `security-specialist` hook id; the shared hard rules (never auto-apply, rate severity and confidence separately, never guess a secret) live in the router's hard rules and in `always-on-rules.md`, repeated by reference, not copied. The vulnerable-package watchlist in `security-code-review/references/vulnerable-packages.md` is a dated snapshot, not a live feed; say so whenever it is used.
 
-- `hooks/`: the always-on rules and safety checks. `always-on.mjs` loads the rules at session start; `guard.mjs` runs the checks (dangerous commands, secrets, invented packages, licences, risky code patterns, suspicious prompts, a reminder when code changed but no checks ran) and `common.mjs` holds the shared helpers. These three files are identical in every plugin repository; change them in `template` first. `hooks/always-on.config.json` holds the id, name, phrase, rules path, auto-detect markers and per-check defaults, and `skills/example-skill/references/always-on-rules.md` is the only source of the rules. Keep that file under 320 words. Reason: it is paid for in tokens at the start of every session, and a copy would drift from the skills. Hooks fail open and only ask, warn or add context; they never edit files silently. The saved mode and check overrides live in the user's `~/.claude/.example-skills.mode` and `.example-skills.features.json`, never in this repo.
+- `hooks/`: the always-on rules and safety checks. `always-on.mjs` loads the rules at session start; `guard.mjs` runs the checks (dangerous commands, secrets, invented packages, licences, risky code patterns, suspicious prompts, a reminder when code changed but no checks ran) and `common.mjs` holds the shared helpers. These three files are identical in every plugin repository; change them in `template` first. `hooks/always-on.config.json` holds the id, name, phrase, rules path, auto-detect markers and per-check defaults, and `skills/security-specialist/references/always-on-rules.md` is the only source of the rules. Keep that file under 320 words. Reason: it is paid for in tokens at the start of every session, and a copy would drift from the skills. Hooks fail open and only ask, warn or add context; they never edit files silently. The saved mode and check overrides live in the user's `~/.claude/.security-specialist.mode` and `.security-specialist.features.json`, never in this repo.
 
 ## Irreversible and shared actions
 
@@ -61,7 +62,8 @@ Checks: frontmatter, name/folder match, description length and trigger, body und
 
 ## Known deliberate states (dated)
 
-- `<record deliberate temporary states here, each with a date and a reason>`
+- 20 October 2026: skills were authored from condensed, generalised public security references (an existing AI code-review workflow, an OWASP-style anti-pattern catalogue, and CI scanning setup guidance), not from a live project; none has been run against a real vulnerability yet. Reason: first draft awaiting real-world testing.
+- 20 October 2026: no agent profiles are supplied under `resources/agents/`. Reason: the three skills run directly and a profile was not needed yet.
 
 ## Anti-drift close-out
 

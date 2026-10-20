@@ -7,6 +7,7 @@
 
 Plugin manifests in .claude-plugin/, agent profile contents and the manifest agents list are checked on every run. Dashes are always checked in text files outside reference-content/, which holds raw source material. Ship checks for placeholders and setup-only paths in the Git index run once skills/example-skill has been deleted.
 """
+
 import json
 import re
 import subprocess
@@ -29,17 +30,43 @@ BANNED_DASHES = (chr(0x2013), chr(0x2014))
 PLACEHOLDER_RE = re.compile(r"<([A-Za-z][^<>\n]*)>")
 HTML_TAGS = {"details", "summary", "div", "br", "p", "a", "img", "kbd", "sub", "sup"}
 PLACEHOLDER_FILES = (
-    "README.md", "LICENSE", "AGENTS.md", "evals/cases.jsonl",
-    ".claude-plugin/plugin.json", ".claude-plugin/marketplace.json",
+    "README.md",
+    "LICENSE",
+    "AGENTS.md",
+    "evals/cases.jsonl",
+    ".claude-plugin/plugin.json",
+    ".claude-plugin/marketplace.json",
 )
 TEXT_EXTENSIONS = {
-    ".md", ".txt", ".py", ".json", ".jsonl", ".yml", ".yaml", ".toml", ".cfg",
-    ".ini", ".sh", ".ps1", ".mjs", ".js", ".ts", ".html", ".css", ".license",
+    ".md",
+    ".txt",
+    ".py",
+    ".json",
+    ".jsonl",
+    ".yml",
+    ".yaml",
+    ".toml",
+    ".cfg",
+    ".ini",
+    ".sh",
+    ".ps1",
+    ".mjs",
+    ".js",
+    ".ts",
+    ".html",
+    ".css",
+    ".license",
 }
 PRIVATE_PATHS = ("SETUP.md", "templates", "reference-content")
 PLUGIN_DIR = ROOT / ".claude-plugin"
 RESERVED_PLUGIN_PREFIXES = ("claude-", "anthropic-", "anthropics-", "cc-plugin-")
-RESERVED_PLUGIN_NAMES = {"claude", "anthropic", "anthropics", "claude-code", "claude-mods"}
+RESERVED_PLUGIN_NAMES = {
+    "claude",
+    "anthropic",
+    "anthropics",
+    "claude-code",
+    "claude-mods",
+}
 MARKETPLACE_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 IGNORED_AGENT_FIELDS = ("permissionMode", "hooks", "mcpServers", "initialPrompt")
 SKILL_PATH_RE = re.compile(r"skills/[A-Za-z0-9_.-]+/SKILL\.md")
@@ -111,7 +138,9 @@ def validate():
         if not NAME_RE.match(name) or len(name) > MAX_NAME:
             errors.append(f"{d.name}: invalid name")
         if not desc or len(desc) > MAX_DESC:
-            errors.append(f"{d.name}: description empty or >{MAX_DESC} chars ({len(desc)})")
+            errors.append(
+                f"{d.name}: description empty or >{MAX_DESC} chars ({len(desc)})"
+            )
         if "<" in desc or ">" in desc:
             errors.append(f"{d.name}: description contains angle brackets")
         if not re.search(r"\bUse\b|\bUse when\b", desc):
@@ -140,7 +169,9 @@ def validate():
                 else:
                     errors.append(f"evals/cases.jsonl:{i}: unknown skill {s}")
             if not case.get("query") or not case.get("expected_behavior"):
-                errors.append(f"evals/cases.jsonl:{i}: needs query and expected_behavior")
+                errors.append(
+                    f"evals/cases.jsonl:{i}: needs query and expected_behavior"
+                )
         for n, c in counts.items():
             if c < MIN_EVALS:
                 errors.append(f"{n}: {c} eval cases < {MIN_EVALS}")
@@ -150,7 +181,9 @@ def validate():
 
 
 def profile_stem(path):
-    return path.name[:-len(".agent.md")] if path.name.endswith(".agent.md") else path.stem
+    return (
+        path.name[: -len(".agent.md")] if path.name.endswith(".agent.md") else path.stem
+    )
 
 
 def valid_profile_name(stem, scope, skill_names):
@@ -177,12 +210,20 @@ def validate_agent_sources():
                 if scope == "skill-specific" and stem.endswith("-workflow"):
                     workflow_profiles.append(path)
                 if not valid_profile_name(stem, scope, names):
-                    expected = "shared-<role>" if scope == "shared" else "<owning-skill-name>-<role>"
+                    expected = (
+                        "shared-<role>"
+                        if scope == "shared"
+                        else "<owning-skill-name>-<role>"
+                    )
                     errors.append(f"{path.relative_to(ROOT)}: name must use {expected}")
         if len(profiles) > 2:
-            errors.append(f"{host.name}: {len(profiles)} agent profiles > 2; combine workflows into one main agent and one helper")
+            errors.append(
+                f"{host.name}: {len(profiles)} agent profiles > 2; combine workflows into one main agent and one helper"
+            )
         if profiles and len(workflow_profiles) != 1:
-            errors.append(f"{host.name}: supply exactly one skill-specific main profile ending in -workflow")
+            errors.append(
+                f"{host.name}: supply exactly one skill-specific main profile ending in -workflow"
+            )
     return errors
 
 
@@ -199,7 +240,9 @@ def agent_skills(frontmatter):
             continue
         inline = re.match(r"^skills:\s*(.+)$", line)
         if inline:
-            return [s.strip() for s in inline.group(1).strip("[]").split(",") if s.strip()]
+            return [
+                s.strip() for s in inline.group(1).strip("[]").split(",") if s.strip()
+            ]
         if listing:
             item = re.match(r"^\s+-\s+(\S+)\s*$", line)
             if item:
@@ -226,7 +269,9 @@ def validate_agent_contents():
             rel = path.relative_to(ROOT)
             text = read_text(path) or ""
             if SKILL_PATH_RE.search(text):
-                errors.append(f"{rel}: refers to skills/<name>/SKILL.md, a path that does not exist in a user's project or an installed plugin. Name the skill and list it under skills: instead")
+                errors.append(
+                    f"{rel}: refers to skills/<name>/SKILL.md, a path that does not exist in a user's project or an installed plugin. Name the skill and list it under skills: instead"
+                )
             if host != "claude-code":
                 continue
             fm = agent_frontmatter(path)
@@ -235,10 +280,14 @@ def validate_agent_contents():
                 continue
             for field in IGNORED_AGENT_FIELDS:
                 if re.search(rf"^{field}:", fm, re.M):
-                    errors.append(f"{rel}: '{field}' is ignored in plugin agents; use plugin hooks or MCP config instead")
+                    errors.append(
+                        f"{rel}: '{field}' is ignored in plugin agents; use plugin hooks or MCP config instead"
+                    )
             for skill in agent_skills(fm):
                 if skill not in names:
-                    errors.append(f"{rel}: skills: lists '{skill}', which is not in skills/")
+                    errors.append(
+                        f"{rel}: skills: lists '{skill}', which is not in skills/"
+                    )
     return errors
 
 
@@ -264,9 +313,13 @@ def validate_plugin():
         name = ""
     elif "<" not in name:
         if not NAME_RE.match(name):
-            errors.append(f".claude-plugin/plugin.json: name '{name}' must be kebab-case")
+            errors.append(
+                f".claude-plugin/plugin.json: name '{name}' must be kebab-case"
+            )
         if name in RESERVED_PLUGIN_NAMES or name.startswith(RESERVED_PLUGIN_PREFIXES):
-            errors.append(f".claude-plugin/plugin.json: name '{name}' is reserved for Anthropic plugins")
+            errors.append(
+                f".claude-plugin/plugin.json: name '{name}' is reserved for Anthropic plugins"
+            )
     for key in ("version", "description"):
         if not data.get(key):
             errors.append(f".claude-plugin/plugin.json: {key} is required")
@@ -280,32 +333,46 @@ def validate_plugin():
     if not declared:
         errors.append(".claude-plugin/plugin.json: license is required")
     elif (declared == "MIT") != is_mit:
-        errors.append(f".claude-plugin/plugin.json: license '{declared}' does not match LICENSE ({'MIT' if is_mit else 'not MIT'})")
+        errors.append(
+            f".claude-plugin/plugin.json: license '{declared}' does not match LICENSE ({'MIT' if is_mit else 'not MIT'})"
+        )
     if badge_mit and declared != "MIT":
         errors.append("README.md: MIT licence badge but plugin.json license is not MIT")
 
     listed = []
     if "agents" in data:
         entries = data["agents"]
-        if not isinstance(entries, list) or not all(isinstance(e, str) for e in entries):
-            errors.append(".claude-plugin/plugin.json: agents must be a list of file paths")
+        if not isinstance(entries, list) or not all(
+            isinstance(e, str) for e in entries
+        ):
+            errors.append(
+                ".claude-plugin/plugin.json: agents must be a list of file paths"
+            )
             entries = []
         for entry in entries:
             target = (ROOT / entry).resolve()
             if not entry.startswith("./") or not entry.endswith(".md") or ".." in entry:
-                errors.append(f".claude-plugin/plugin.json: agents entry '{entry}' must be a ./ path to a .md file inside the repo")
+                errors.append(
+                    f".claude-plugin/plugin.json: agents entry '{entry}' must be a ./ path to a .md file inside the repo"
+                )
             elif not target.is_file():
-                errors.append(f".claude-plugin/plugin.json: agents entry '{entry}' does not exist")
+                errors.append(
+                    f".claude-plugin/plugin.json: agents entry '{entry}' does not exist"
+                )
             else:
                 listed.append(target)
     for path in agent_profiles("claude-code"):
         if path.resolve() not in listed:
-            errors.append(f".claude-plugin/plugin.json: agents must list ./{path.relative_to(ROOT).as_posix()}; without it Claude Code scans agents/ instead")
+            errors.append(
+                f".claude-plugin/plugin.json: agents must list ./{path.relative_to(ROOT).as_posix()}; without it Claude Code scans agents/ instead"
+            )
 
     top_agents = ROOT / "agents"
     if top_agents.is_dir():
         for md in sorted(top_agents.rglob("*.md")):
-            errors.append(f"{md.relative_to(ROOT).as_posix()}: Claude Code scans a top-level agents/ folder; keep Codex briefs only under resources/agents/codex/")
+            errors.append(
+                f"{md.relative_to(ROOT).as_posix()}: Claude Code scans a top-level agents/ folder; keep Codex briefs only under resources/agents/codex/"
+            )
 
     if not market.exists():
         return errors + [".claude-plugin/marketplace.json missing"]
@@ -319,15 +386,23 @@ def validate_plugin():
         errors.append(".claude-plugin/marketplace.json: owner.name is required")
     entries = mdata.get("plugins")
     if not isinstance(entries, list) or len(entries) != 1:
-        errors.append(".claude-plugin/marketplace.json: plugins must hold exactly one entry (this repo)")
+        errors.append(
+            ".claude-plugin/marketplace.json: plugins must hold exactly one entry (this repo)"
+        )
     else:
         entry = entries[0]
         if entry.get("name") != name:
-            errors.append(".claude-plugin/marketplace.json: plugin entry name differs from plugin.json name")
+            errors.append(
+                ".claude-plugin/marketplace.json: plugin entry name differs from plugin.json name"
+            )
         if entry.get("source") != "./":
-            errors.append('.claude-plugin/marketplace.json: plugin entry source must be "./"')
+            errors.append(
+                '.claude-plugin/marketplace.json: plugin entry source must be "./"'
+            )
         if entry.get("version") and entry.get("version") != data.get("version"):
-            errors.append(".claude-plugin/marketplace.json: entry version differs from plugin.json version")
+            errors.append(
+                ".claude-plugin/marketplace.json: entry version differs from plugin.json version"
+            )
     return errors
 
 
@@ -338,15 +413,21 @@ def dashes():
         if not p.is_file() or ".git" in parts or parts[0] == "reference-content":
             continue
         if any(dash in p.name for dash in BANNED_DASHES):
-            errors.append(f"{p.relative_to(ROOT)}: em or en dash in the file name (use a hyphen)")
+            errors.append(
+                f"{p.relative_to(ROOT)}: em or en dash in the file name (use a hyphen)"
+            )
         text = read_text(p)
         if text is None:
             if p.suffix.lower() in TEXT_EXTENSIONS or p.suffix == "":
-                errors.append(f"{p.relative_to(ROOT)}: not UTF-8 text, so dashes cannot be checked")
+                errors.append(
+                    f"{p.relative_to(ROOT)}: not UTF-8 text, so dashes cannot be checked"
+                )
             continue
         for i, line in enumerate(text.splitlines(), 1):
             if any(dash in line for dash in BANNED_DASHES):
-                errors.append(f"{p.relative_to(ROOT)}:{i}: em or en dash (use a hyphen)")
+                errors.append(
+                    f"{p.relative_to(ROOT)}:{i}: em or en dash (use a hyphen)"
+                )
     return errors
 
 
@@ -354,8 +435,11 @@ def strip_terms():
     f = ROOT / "reference-content" / "strip-terms.txt"
     if not f.exists():
         return []
-    terms = [line.strip().lower() for line in f.read_text(encoding="utf-8").splitlines()
-             if line.strip() and not line.lstrip().startswith("#")]
+    terms = [
+        line.strip().lower()
+        for line in f.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
     if not terms:
         return []
     targets = [ROOT / n for n in ("README.md", "AGENTS.md")]
@@ -372,7 +456,9 @@ def strip_terms():
             low = line.lower()
             for term in terms:
                 if term in low:
-                    errors.append(f"{x.relative_to(ROOT)}:{i}: project-specific term '{term}' (see strip-terms.txt)")
+                    errors.append(
+                        f"{x.relative_to(ROOT)}:{i}: project-specific term '{term}' (see strip-terms.txt)"
+                    )
     return errors
 
 
@@ -403,7 +489,9 @@ def ship_checks():
     except FileNotFoundError:
         return errors + ["git is not installed, so ship checks could not run"], False
     if tracked.returncode:
-        errors.append("could not read the Git index; commit the repository before shipping")
+        errors.append(
+            "could not read the Git index; commit the repository before shipping"
+        )
     else:
         errors.extend(
             f"{path}: private setup file is tracked; keep it local and ignored"
@@ -425,11 +513,15 @@ def ship_checks():
                 check=False,
             )
         except FileNotFoundError:
-            return errors + ["git is not installed, so ship checks could not run"], False
+            return errors + [
+                "git is not installed, so ship checks could not run"
+            ], False
         if result.returncode != 0:
             unignored.append(rel)
     if unignored:
-        errors.append("setup-only paths must be ignored in .gitignore: " + ", ".join(unignored))
+        errors.append(
+            "setup-only paths must be ignored in .gitignore: " + ", ".join(unignored)
+        )
     return errors, False
 
 
@@ -450,7 +542,9 @@ def catalogue(write):
     if not pat.search(text):
         return ["README.md: catalogue markers missing"]
     updated = pat.sub(lambda _: new, text)
-    updated = BADGE_RE.sub(lambda m: f"{m.group(1)}{len(skill_dirs())}{m.group(3)}", updated)
+    updated = BADGE_RE.sub(
+        lambda m: f"{m.group(1)}{len(skill_dirs())}{m.group(3)}", updated
+    )
     if updated == text:
         return []
     if write:
@@ -475,12 +569,16 @@ def validate_always_on():
         return errors
     rules = ROOT / data["rules"]
     if not rules.is_file():
-        errors.append(f"hooks/always-on.config.json: rules file '{data['rules']}' does not exist")
+        errors.append(
+            f"hooks/always-on.config.json: rules file '{data['rules']}' does not exist"
+        )
     else:
         text = rules.read_text(encoding="utf-8")
         words = len(text.split())
         if words > 320:
-            errors.append(f"{data['rules']}: {words} words; keep always-on rules to 320 or fewer, they are paid for in every session")
+            errors.append(
+                f"{data['rules']}: {words} words; keep always-on rules to 320 or fewer, they are paid for in every session"
+            )
         if re.search(r"<[A-Za-z][^<>\n]*>", text):
             errors.append(f"{data['rules']}: leftover placeholder text")
     hooks_json, err = load_json(hooks_dir / "hooks.json")
@@ -490,16 +588,36 @@ def validate_always_on():
         raw = json.dumps(hooks_json)
         if "always-on.mjs" not in raw:
             errors.append("hooks/hooks.json: must run hooks/always-on.mjs")
-        needed = ["always-on.mjs", "common.mjs"] + (["guard.mjs"] if "guard.mjs" in raw else [])
+        needed = ["always-on.mjs", "common.mjs"] + (
+            ["guard.mjs"] if "guard.mjs" in raw else []
+        )
         for name in needed:
             if not (hooks_dir / name).is_file():
                 errors.append(f"hooks/{name} is missing")
     markers = data.get("autoMarkers", [])
-    if not isinstance(markers, list) or not all(isinstance(m, dict) and m.get("file") for m in markers):
-        errors.append("hooks/always-on.config.json: autoMarkers must be a list of objects with a file")
+    if not isinstance(markers, list) or not all(
+        isinstance(m, dict) and m.get("file") for m in markers
+    ):
+        errors.append(
+            "hooks/always-on.config.json: autoMarkers must be a list of objects with a file"
+        )
     if data.get("defaultMode", "on") not in ("on", "off", "auto"):
-        errors.append("hooks/always-on.config.json: defaultMode must be on, off or auto")
-    known = {"promptGuard", "editSecurity", "linkGuard", "styleGuard", "sessionLog", "verifyReminder", "autoCommit", "packageGuard", "licenseGuard", "dangerGuard", "secretsGuard"}
+        errors.append(
+            "hooks/always-on.config.json: defaultMode must be on, off or auto"
+        )
+    known = {
+        "promptGuard",
+        "editSecurity",
+        "linkGuard",
+        "styleGuard",
+        "sessionLog",
+        "verifyReminder",
+        "autoCommit",
+        "packageGuard",
+        "licenseGuard",
+        "dangerGuard",
+        "secretsGuard",
+    }
     features = data.get("features", {})
     if not isinstance(features, dict):
         errors.append("hooks/always-on.config.json: features must be an object")
@@ -508,7 +626,9 @@ def validate_always_on():
             if key not in known:
                 errors.append(f"hooks/always-on.config.json: unknown feature '{key}'")
             elif not isinstance(value, bool):
-                errors.append(f"hooks/always-on.config.json: feature '{key}' must be true or false")
+                errors.append(
+                    f"hooks/always-on.config.json: feature '{key}' must be true or false"
+                )
     return errors
 
 

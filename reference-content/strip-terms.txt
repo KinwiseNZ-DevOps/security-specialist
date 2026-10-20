@@ -1,5 +1,0 @@
-# One term per line (case-insensitive). Add every project, company, product,
-# person, path or domain name from your raw material that must NOT appear in
-# the finished skills. The validator fails if a term shows up in skills/,
-# evals/, README.md, AGENTS.md or reference-content/sources/.
-# Lines starting with # are ignored. Leave this file empty if nothing needs stripping.

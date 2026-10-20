@@ -1,9 +1,9 @@
 {
-  "name": "<PLUGIN-NAME>",
+  "name": "security-specialist",
   "version": "0.1.0",
-  "description": "<ONE SENTENCE: what the skills do, for whom>",
-  "author": { "name": "<COPYRIGHT HOLDER>" },
+  "description": "Skills that reason about a codebase for vulnerabilities and set up automated security scanning in CI",
+  "author": { "name": "KinWise Limited" },
   "license": "MIT",
-  "repository": "https://github.com/<OWNER>/<REPO>",
-  "keywords": ["agent-skills"]
+  "repository": "https://github.com/KinwiseNZ-DevOps/security-specialist",
+  "keywords": ["agent-skills", "security", "owasp", "vulnerability-scanning", "ci-cd"]
 }

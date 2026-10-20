@@ -1,0 +1,20 @@
+{
+  "name": "security-specialist-marketplace",
+  "interface": {
+    "displayName": "KinWise Security Specialist"
+  },
+  "plugins": [
+    {
+      "name": "security-specialist",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
