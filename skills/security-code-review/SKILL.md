@@ -50,7 +50,7 @@ Before handling a request, follow the agent selection in [security-specialist](.
 ## References
 
 - [vuln-categories.md](references/vuln-categories.md): detection guidance for injection, auth, headers, frontend, API, AI/LLM and logging categories, with OWASP mapping.
-- [language-patterns.md](references/language-patterns.md): framework-specific vulnerable patterns for JavaScript/TypeScript, Python, Java, PHP, Go, Ruby and Rust.
+- [language-patterns.md](references/language-patterns.md): framework-specific vulnerable patterns for JavaScript/TypeScript, Python, Java, PHP, Go, Ruby, Rust, and Dart/Flutter.
 - [secret-patterns.md](references/secret-patterns.md): regex and entropy heuristics for credentials, keys and connection strings, plus safe patterns to not flag.
 - [vulnerable-packages.md](references/vulnerable-packages.md): a dated watchlist of known-vulnerable packages by ecosystem.
 - [report-format.md](references/report-format.md): the findings summary, finding-card and patch-proposal template.
