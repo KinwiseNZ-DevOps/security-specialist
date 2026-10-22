@@ -6,7 +6,7 @@ Load this during the dependency audit step. The table below is a dated snapshot,
 
 - **[OSV.dev](https://osv.dev)**: aggregates advisories for npm, PyPI, crates.io, Go, Maven, RubyGems, NuGet and more. Has a free query API with no key required, at `api.osv.dev/v1/query`: send it a `POST` with a JSON body naming the package, ecosystem and installed version, for example `{"package": {"name": "<name>", "ecosystem": "<ecosystem>"}, "version": "<installed-version>"}`. Prefer this for an automated check against a lock file.
 - **[GitHub Advisory Database](https://github.com/advisories)**: the same source Dependabot uses; browsable, and queryable with `gh api graphql` or the REST advisories endpoint.
-- **The ecosystem's own audit command**, run against the project's actual lock file rather than a hand-maintained list: `npm audit`, `pip-audit`, `cargo audit`, `govulncheck`, `bundler-audit`. These catch anything newer than this file and anything this file does not cover at all.
+- **The ecosystem's own audit command**, run against the project's actual lock file rather than a hand-maintained list: `npm audit`, `pip-audit`, `cargo audit`, `govulncheck`, `bundler-audit`, `composer audit`. These catch anything newer than this file and anything this file does not cover at all.
 - **[NVD](https://nvd.nist.gov)**: the authoritative CVE record; use it to confirm details once OSV or GHSA has named a CVE.
 
 State which of these, if any, was actually checked. A finding sourced only from the table below should say so, since it may already be out of date.
@@ -53,6 +53,10 @@ Also flag, regardless of version: `eval` or `vm.runInContext` inside a dependenc
 | log4j-core | 2.15.0 | Incomplete fix; still vulnerable |
 | Apache Commons Text | < 1.10.0 | Text4Shell remote code execution (CVE-2022-42889) |
 | Jackson-databind | < 2.14.0 | Deserialization vulnerabilities |
+
+## PHP / Composer
+
+Run `composer audit` against `composer.lock` for packages (Composer 2.4 or later), and query OSV.dev with the `Packagist` ecosystem. These check libraries only. The PHP runtime itself is covered in [runtime-and-platform-advisories.md](runtime-and-platform-advisories.md), which holds a dated entry for the PHP security release of 21 October 2026 (fixed in PHP 8.5.12, 8.4.27, 8.3.36 and 8.2.35). No package versions are listed here because none were verified.
 
 ## Ruby, Rust and Go
 

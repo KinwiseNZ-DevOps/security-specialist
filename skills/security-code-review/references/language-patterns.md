@@ -39,7 +39,7 @@ String-concatenated SQL passed to `jdbcTemplate.query()`; a `DocumentBuilderFact
 
 ## PHP
 
-Direct interpolation of `$_GET` / `$_POST` into a query string; `include($_GET['page'] . ".php")` (local or remote file inclusion); `eval($_POST['code'])`; `extract($_POST)` (can overwrite any variable in scope); `==` instead of `===` for a password or token comparison; `unserialize($_COOKIE['data'])` (can lead to remote code execution depending on available gadget classes).
+Direct interpolation of `$_GET` / `$_POST` into a query string; `include($_GET['page'] . ".php")` (local or remote file inclusion); `eval($_POST['code'])`; `extract($_POST)` (can overwrite any variable in scope); `==` instead of `===` for a password or token comparison; `unserialize($_COOKIE['data'])` (can lead to remote code execution depending on available gadget classes). Also check the PHP version itself: see [runtime-and-platform-advisories.md](runtime-and-platform-advisories.md).
 
 ## Go
 

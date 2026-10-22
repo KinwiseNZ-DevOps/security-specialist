@@ -32,7 +32,7 @@ Before handling a request, follow the agent selection in [security-specialist](.
 ## Steps
 
 1. **Detect.** Identify the language(s) and framework(s) in use (`package.json`, `requirements.txt`, `go.mod`, `Cargo.toml`, `pom.xml`, `Gemfile`, `composer.json`). Load the matching section of [language-patterns.md](references/language-patterns.md).
-2. **Audit dependencies.** Check lock files against [vulnerable-packages.md](references/vulnerable-packages.md). Flag known CVEs, abandoned packages and suspiciously old pins. State that the watchlist is a snapshot, not a live feed, and that current advisories should be checked for anything it does not cover.
+2. **Audit dependencies and the runtime.** Check lock files against [vulnerable-packages.md](references/vulnerable-packages.md). Flag known CVEs, abandoned packages and suspiciously old pins. Then find the language runtime and base image versions (Dockerfile `FROM` lines, version files, CI and hosting config) and check them against [runtime-and-platform-advisories.md](references/runtime-and-platform-advisories.md); package audits do not cover the interpreter. State that the watchlist is a snapshot, not a live feed, and that current advisories should be checked for anything it does not cover.
 3. **Scan for secrets and exposure.** Check source, config, CI/CD and infrastructure files using [secret-patterns.md](references/secret-patterns.md): hardcoded keys, committed `.env` files, secrets in logs or error responses, cloud credentials.
 4. **Scan for vulnerabilities.** Work through [vuln-categories.md](references/vuln-categories.md): injection, authentication and access control, headers, frontend, API, AI/LLM, and logging anti-patterns. Reason about each hit: is sanitisation or a framework default already handling it upstream?
 5. **Trace across files.** Follow user-controlled input from its entry point (HTTP params, headers, body, file uploads) to where it is used (queries, `exec` calls, HTML output, file writes). Some vulnerabilities only appear when files are read together.
@@ -45,6 +45,7 @@ Before handling a request, follow the agent selection in [security-specialist](.
 - Report severity and confidence separately for every finding, never collapse them into one scale. Mechanism: a reviewer prioritises differently when a CRITICAL finding is only Low confidence. Reason: collapsing the two hides exactly the information a reviewer needs most.
 - Do not flag an intentional placeholder as a secret (`<YOUR_API_KEY>`, `process.env.API_KEY`, `sk-...` in a comment). Mechanism: check [secret-patterns.md](references/secret-patterns.md)'s safe-pattern list before flagging. Reason: a noisy scan trains reviewers to ignore it.
 - State which files and how much of the codebase were actually scanned. Mechanism: a scan of one file is not a security review of the project. Reason: an unqualified "scanned" claim is indistinguishable from a full audit until it is wrong.
+- Never report a runtime as safe or as vulnerable from a version string alone. Mechanism: the file may not match production, and a distribution package can carry a fix under an old version number. Report what was seen and what was not, and rate confidence accordingly.
 - Treat the vulnerable-packages watchlist and any named CVE as dated reference material, not a live feed. Mechanism: new CVEs appear and old ones get patched continuously. Reason: a stale "no known CVEs" claim is a false negative.
 
 ## References
@@ -53,6 +54,7 @@ Before handling a request, follow the agent selection in [security-specialist](.
 - [language-patterns.md](references/language-patterns.md): framework-specific vulnerable patterns for JavaScript/TypeScript, Python, Java, PHP, Go, Ruby, Rust, and Dart/Flutter.
 - [secret-patterns.md](references/secret-patterns.md): regex and entropy heuristics for credentials, keys and connection strings, plus safe patterns to not flag.
 - [vulnerable-packages.md](references/vulnerable-packages.md): a dated watchlist of known-vulnerable packages by ecosystem.
+- [runtime-and-platform-advisories.md](references/runtime-and-platform-advisories.md): how to find and judge the runtime and base image version, with dated advisory entries (including the PHP release of 21 October 2026).
 - [report-format.md](references/report-format.md): the findings summary, finding-card and patch-proposal template.
 - [hardening-checklist.md](references/hardening-checklist.md): a quick-reference checklist and templates (security headers, JWT validation, cookie flags) for what a fix should look like.
 

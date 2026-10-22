@@ -20,7 +20,7 @@ jobs:
       - run: npm audit --audit-level=high
 ```
 
-Swap the setup and audit steps for the ecosystem in use: `pip-audit` for Python, `bundler-audit` for Ruby, `govulncheck` for Go, `cargo audit` for Rust.
+Swap the setup and audit steps for the ecosystem in use: `pip-audit` for Python, `bundler-audit` for Ruby, `govulncheck` for Go, `cargo audit` for Rust, `composer audit` for PHP. These audit packages only. To catch an outdated language runtime or base image, add a check that the Dockerfile `FROM` tag or the version file is on a supported release, or use an image scanner; see [runtime-and-platform-advisories.md](../../security-code-review/references/runtime-and-platform-advisories.md).
 
 ## Static (SAST) scanning
 
