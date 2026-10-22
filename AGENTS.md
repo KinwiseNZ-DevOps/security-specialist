@@ -25,6 +25,7 @@ Agent map and standing rules for this repository. Read this file as policy, not 
 - If a check cannot be run, say so explicitly instead of reporting success.
 - Do not claim completion stronger than the evidence; state exactly what was checked.
 - Solve the problem, not the test. Behavioural cases measure quality; they do not define it. If a case or check is wrong, say so rather than working around it.
+- Treat the user's description of their own system as the working fact. Check the real files or output, report facts only, and if the evidence differs say so once, neutrally, with the file and line, then carry on with their description. Do not contradict first and concede later. Reason: the user built the system; arguing from assumption wastes their time and teaches them to repeat themselves.
 
 ## Verification
 

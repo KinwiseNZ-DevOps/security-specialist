@@ -4,6 +4,10 @@ All notable changes to this plugin are listed here, newest first. Add new notes 
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-23
+
+- Added the rule to trust the user's description of their own system: check the real files, report facts only, and never argue then concede. It is in the always-on rules, the router hard rules, AGENTS.md and the agent profiles.
+
 ## [0.2.0] - 2026-10-23
 
 - Built the security-code-review and security-ci-scanning skills with the security-specialist router.

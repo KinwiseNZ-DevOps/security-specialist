@@ -39,6 +39,7 @@ Reason: a one-off review and a standing CI pipeline change have different risk p
 - Treat a vulnerability's severity and a finding's confidence as two separate ratings. Mechanism: a CRITICAL-but-Low-confidence finding and a LOW-but-High-confidence finding need different handling; collapsing them into one scale loses that distinction.
 - Do not guess at secrets, API keys, or credentials to fill in a configuration. Mechanism: a guessed value that happens to look valid can be worse than an obvious placeholder. Reason: every credential must come from the user or their own secrets store.
 - State the date or version a piece of security guidance was current as of, when it names a specific CVE or package version. Mechanism: vulnerability data ages; a version table from last year can miss a new CVE or clear an old one. Reason: an undated claim cannot be checked for staleness later.
+- Treat the user's description of their own system as the working fact. Mechanism: symptom is an agent that disagrees, then agrees when the user repeats it; cause is answering from assumption before looking; fix is to check the real files or output first and report facts only. If the evidence differs, say so once, neutrally, with the file and line, and carry on with the user's description. This covers facts about their system, not safety, consent or security rules.
 
 ## References
 
