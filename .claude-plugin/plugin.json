@@ -1,6 +1,6 @@
 {
   "name": "security-specialist",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Skills that reason about a codebase for vulnerabilities and set up automated security scanning in CI",
   "author": { "name": "KinWise Limited" },
   "license": "MIT",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "security-specialist",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Security code review and CI scanning skills for agent coding assistants.",
   "author": {
     "name": "KinWise Limited"
