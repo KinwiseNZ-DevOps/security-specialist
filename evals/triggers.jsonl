@@ -1,0 +1,9 @@
+{"skill": "security-ci-scanning", "type": "obvious", "query": "Add Dependabot, CodeQL and Semgrep scanning to our CI pipeline."}
+{"skill": "security-ci-scanning", "type": "paraphrase", "query": "I want our pull requests checked automatically for vulnerable packages and risky code."}
+{"skill": "security-ci-scanning", "type": "unrelated", "query": "Review this function for SQL injection."}
+{"skill": "security-code-review", "type": "obvious", "query": "Review this code for SQL injection, XSS and exposed secrets."}
+{"skill": "security-code-review", "type": "paraphrase", "query": "Can you check whether someone could reach other users' data through this endpoint?"}
+{"skill": "security-code-review", "type": "unrelated", "query": "Set up CodeQL in GitHub Actions."}
+{"skill": "security-specialist", "type": "obvious", "query": "Help me with the security of our application."}
+{"skill": "security-specialist", "type": "paraphrase", "query": "We got a vulnerability report about one of our dependencies. Where do we start?"}
+{"skill": "security-specialist", "type": "unrelated", "query": "Harden the firewall and network rules on our servers."}

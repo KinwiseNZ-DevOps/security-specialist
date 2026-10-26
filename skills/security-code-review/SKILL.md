@@ -15,6 +15,15 @@ description: >
 
 Stance: read code like a researcher, not a pattern-matcher; context, data flow and framework defaults decide whether something is exploitable. Every finding is reported, never silently fixed.
 
+## Hard rules
+
+- Never auto-apply a proposed patch. Mechanism: present the before and after code, then stop. Reason: the user approves every change to security-relevant code.
+- Report severity and confidence separately for every finding, never collapse them into one scale. Mechanism: a reviewer prioritises differently when a CRITICAL finding is only Low confidence. Reason: collapsing the two hides exactly the information a reviewer needs most.
+- Do not flag an intentional placeholder as a secret (`<YOUR_API_KEY>`, `process.env.API_KEY`, `sk-...` in a comment). Mechanism: check [secret-patterns.md](references/secret-patterns.md)'s safe-pattern list before flagging. Reason: a noisy scan trains reviewers to ignore it.
+- State which files and how much of the codebase were actually scanned. Mechanism: a scan of one file is not a security review of the project. Reason: an unqualified "scanned" claim is indistinguishable from a full audit until it is wrong.
+- Never report a runtime as safe or as vulnerable from a version string alone. Mechanism: the file may not match production, and a distribution package can carry a fix under an old version number. Report what was seen and what was not, and rate confidence accordingly.
+- Treat the vulnerable-packages watchlist and any named CVE as dated reference material, not a live feed. Mechanism: new CVEs appear and old ones get patched continuously. Reason: a stale "no known CVEs" claim is a false negative.
+
 ## Agent dispatch
 
 Before handling a request, follow the agent selection in [security-specialist](../security-specialist/SKILL.md), including when this skill is invoked directly. Give the selected agent this skill's instructions. If no agent is available, continue yourself.
@@ -38,15 +47,6 @@ Before handling a request, follow the agent selection in [security-specialist](.
 5. **Trace across files.** Follow user-controlled input from its entry point (HTTP params, headers, body, file uploads) to where it is used (queries, `exec` calls, HTML output, file writes). Some vulnerabilities only appear when files are read together.
 6. **Verify each finding.** Re-read the code. Downgrade or discard anything that is not genuinely exploitable. Assign severity (CRITICAL, HIGH, MEDIUM, LOW, INFO) and confidence (High, Medium, Low) separately.
 7. **Report** in the format in [report-format.md](references/report-format.md): a summary table first, then findings grouped by category with file, line, risk in plain words, and a proposed fix for every CRITICAL and HIGH finding. State: "Review each patch before applying. Nothing has been changed yet."
-
-## Hard rules
-
-- Never auto-apply a proposed patch. Mechanism: present the before and after code, then stop. Reason: the user approves every change to security-relevant code.
-- Report severity and confidence separately for every finding, never collapse them into one scale. Mechanism: a reviewer prioritises differently when a CRITICAL finding is only Low confidence. Reason: collapsing the two hides exactly the information a reviewer needs most.
-- Do not flag an intentional placeholder as a secret (`<YOUR_API_KEY>`, `process.env.API_KEY`, `sk-...` in a comment). Mechanism: check [secret-patterns.md](references/secret-patterns.md)'s safe-pattern list before flagging. Reason: a noisy scan trains reviewers to ignore it.
-- State which files and how much of the codebase were actually scanned. Mechanism: a scan of one file is not a security review of the project. Reason: an unqualified "scanned" claim is indistinguishable from a full audit until it is wrong.
-- Never report a runtime as safe or as vulnerable from a version string alone. Mechanism: the file may not match production, and a distribution package can carry a fix under an old version number. Report what was seen and what was not, and rate confidence accordingly.
-- Treat the vulnerable-packages watchlist and any named CVE as dated reference material, not a live feed. Mechanism: new CVEs appear and old ones get patched continuously. Reason: a stale "no known CVEs" claim is a false negative.
 
 ## References
 

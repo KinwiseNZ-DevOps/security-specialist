@@ -19,6 +19,8 @@ SKILLS = ROOT / "skills"
 README = ROOT / "README.md"
 AGENTS = ROOT / "AGENTS.md"
 EVALS = ROOT / "evals" / "cases.jsonl"
+TRIGGERS = ROOT / "evals" / "triggers.jsonl"
+TRIGGER_TYPES = ("obvious", "paraphrase", "unrelated")
 AGENT_SOURCES = ROOT / "resources" / "agents"
 BEGIN, END = "<!-- catalogue:begin -->", "<!-- catalogue:end -->"
 BADGE_RE = re.compile(r"(badge/agent_skills-)(\d+|<N>)(-)")
@@ -34,6 +36,7 @@ PLACEHOLDER_FILES = (
     "LICENSE",
     "AGENTS.md",
     "evals/cases.jsonl",
+    "evals/triggers.jsonl",
     ".claude-plugin/plugin.json",
     ".claude-plugin/marketplace.json",
 )
@@ -177,6 +180,44 @@ def validate():
                 errors.append(f"{n}: {c} eval cases < {MIN_EVALS}")
     else:
         errors.append("evals/cases.jsonl missing")
+    errors += validate_triggers(names)
+    for d in skill_dirs():
+        if (d / "README.md").exists():
+            errors.append(
+                f"{d.name}: README.md inside a skill folder; put the content in SKILL.md or references/"
+            )
+    return errors
+
+
+def validate_triggers(names):
+    """Triggering tests: each skill needs obvious, paraphrase and unrelated queries."""
+    if not TRIGGERS.exists():
+        return ["evals/triggers.jsonl missing"]
+    errors = []
+    seen = {n: set() for n in names}
+    for i, line in enumerate(TRIGGERS.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            case = json.loads(line)
+        except json.JSONDecodeError:
+            errors.append(f"evals/triggers.jsonl:{i}: invalid JSON")
+            continue
+        skill, kind = case.get("skill"), case.get("type")
+        if skill not in seen:
+            errors.append(f"evals/triggers.jsonl:{i}: unknown skill {skill}")
+        elif kind not in TRIGGER_TYPES:
+            errors.append(
+                f"evals/triggers.jsonl:{i}: type must be one of {', '.join(TRIGGER_TYPES)}"
+            )
+        elif not case.get("query"):
+            errors.append(f"evals/triggers.jsonl:{i}: needs a query")
+        else:
+            seen[skill].add(kind)
+    for n, kinds in seen.items():
+        for kind in TRIGGER_TYPES:
+            if kind not in kinds:
+                errors.append(f"{n}: no '{kind}' trigger query in evals/triggers.jsonl")
     return errors
 
 

@@ -3,7 +3,7 @@
   "name": "Security Specialist",
   "phrase": "security",
   "rules": "skills/security-specialist/references/always-on-rules.md",
-  "defaultMode": "on",
+  "defaultMode": "auto",
   "autoDetect": true,
   "autoMarkers": [
     {

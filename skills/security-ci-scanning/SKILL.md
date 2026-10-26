@@ -14,6 +14,13 @@ description: >
 
 Stance: scanning should match what the repository actually is; a library gets dependency and static scanning, a deployed API or web app also gets dynamic scanning. Every setup is a pull request the user reviews, never a direct push, and every required secret is named, never guessed.
 
+## Hard rules
+
+- Never commit directly to the default branch for a scanning setup. Mechanism: open a pull request and let the user merge it. Reason: a CI change is visible to the whole team and must be reviewed like any other.
+- Never invent a host, API key, or secret value. Mechanism: leave a clearly marked TODO and name exactly which secret the user must add, and where. Reason: a guessed value that looks plausible is worse than an obvious gap.
+- Do not set up dynamic scanning against a repository with no server or API surface. Mechanism: check for server/API framework code, routes and a deployment config first. Reason: DAST testing a library produces false reassurance, not findings.
+- State plainly when a detected host, framework or auth type is uncertain, and offer the user a choice instead of picking one silently. Mechanism: list what was detected and what still needs input in the pull request description. Reason: a wrong guess here breaks the pipeline rather than just under-scanning.
+
 ## Agent dispatch
 
 Before handling a request, follow the agent selection in [security-specialist](../security-specialist/SKILL.md), including when this skill is invoked directly. Give the selected agent this skill's instructions. If no agent is available, continue yourself.
@@ -37,13 +44,6 @@ Reason: dynamic scanning needs a running application to attack; pointing it at a
 4. **Add dynamic (DAST) scanning, if it applies.** Detect the framework, language, likely host pattern (localhost port, Docker service name, a deployed URL) and authentication mechanism. Generate the scanner's configuration file and a CI workflow that starts the app and runs the scan against it. Mark anything undetected as a TODO rather than guessing.
 5. **Open it as a pull request**, never a direct commit to the default branch. Describe what was detected, what is ready to use, and exactly which secrets the user must add in their CI provider's settings before the workflow can run.
 6. **Verify.** If the new workflow can be run locally or in a sandboxed CI run, do so and report the result. If it cannot be run from here, say so explicitly rather than claiming it works.
-
-## Hard rules
-
-- Never commit directly to the default branch for a scanning setup. Mechanism: open a pull request and let the user merge it. Reason: a CI change is visible to the whole team and must be reviewed like any other.
-- Never invent a host, API key, or secret value. Mechanism: leave a clearly marked TODO and name exactly which secret the user must add, and where. Reason: a guessed value that looks plausible is worse than an obvious gap.
-- Do not set up dynamic scanning against a repository with no server or API surface. Mechanism: check for server/API framework code, routes and a deployment config first. Reason: DAST testing a library produces false reassurance, not findings.
-- State plainly when a detected host, framework or auth type is uncertain, and offer the user a choice instead of picking one silently. Mechanism: list what was detected and what still needs input in the pull request description. Reason: a wrong guess here breaks the pipeline rather than just under-scanning.
 
 ## References
 
