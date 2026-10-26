@@ -1,14 +1,13 @@
 ---
 name: security-code-review
 description: >
-  Reasons about a codebase for security vulnerabilities the way a security
-  researcher would: tracing data flow, auditing dependencies and secrets,
-  and reporting findings with severity and confidence. Use when asked to
-  scan code for vulnerabilities, check for SQL injection, XSS, command
-  injection, exposed secrets or insecure dependencies, or review
-  authentication and access control logic. Do not use for setting up CI
-  scanning pipelines (security-ci-scanning) or for infrastructure and
-  network configuration.
+  Use when asked to scan code for vulnerabilities, check for SQL injection, XSS,
+  command injection, exposed secrets or insecure dependencies, or review
+  authentication and access control logic. Reasons about a codebase for security
+  vulnerabilities the way a security researcher would: tracing data flow,
+  auditing dependencies and secrets, and reporting findings with severity and
+  confidence. Do not use for setting up CI scanning pipelines (security-ci-
+  scanning) or for infrastructure and network configuration.
 ---
 
 # Security Code Review

@@ -181,6 +181,7 @@ def validate():
     else:
         errors.append("evals/cases.jsonl missing")
     errors += validate_triggers(names)
+    errors += validate_user_only_policy()
     for d in skill_dirs():
         if (d / "README.md").exists():
             errors.append(
@@ -197,6 +198,21 @@ def user_only_skills():
         if fm and fm.get("disable-model-invocation", "").lower() == "true":
             out.add(d.name)
     return out
+
+
+def validate_user_only_policy():
+    """Codex needs its own switch: agents/openai.yaml with allow_implicit_invocation: false."""
+    errors = []
+    for d in skill_dirs():
+        if d.name not in user_only_skills():
+            continue
+        policy = d / "agents" / "openai.yaml"
+        text = read_text(policy) if policy.exists() else ""
+        if not re.search(r"(?m)^\s*allow_implicit_invocation:\s*false\s*$", text or ""):
+            errors.append(
+                f"{d.name}: user-only skill needs skills/{d.name}/agents/openai.yaml with policy.allow_implicit_invocation: false (Codex)"
+            )
+    return errors
 
 
 def validate_triggers(names):
@@ -587,7 +603,8 @@ def build_catalogue():
     for d in skill_dirs():
         fm, _ = parse(d / "SKILL.md")
         desc = (fm or {}).get("description", "")
-        first = re.split(r"(?<=\.)\s", desc, maxsplit=1)[0] if desc else ""
+        sentences = re.split(r"(?<=\.)\s", desc) if desc else [""]
+        first = next((x for x in sentences if not x.startswith("Use ")), sentences[0])
         rows.append(f"| [`{d.name}`](skills/{d.name}/SKILL.md) | {first} |")
     return "\n".join(rows)
 

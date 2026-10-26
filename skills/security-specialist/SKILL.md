@@ -1,13 +1,12 @@
 ---
 name: security-specialist
 description: >
-  Router and shared guardrails for application security work: reasoning
-  about a codebase for vulnerabilities and setting up automated security
-  scanning in CI/CD. Use when a task touches security review, a
-  vulnerability report, secrets exposure, dependency risk, or setting up
-  CI security scanning, or when it is unclear which security skill
-  applies. Do not use for infrastructure hardening, network security, or
-  incident response after a live breach.
+  Use when a task touches security review, a vulnerability report, secrets
+  exposure, dependency risk, or setting up CI security scanning, or when it is
+  unclear which security skill applies. Router and shared guardrails for
+  application security work: reasoning about a codebase for vulnerabilities and
+  setting up automated security scanning in CI/CD. Do not use for infrastructure
+  hardening, network security, or incident response after a live breach.
 ---
 
 # Security Specialist

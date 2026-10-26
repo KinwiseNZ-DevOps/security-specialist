@@ -1,13 +1,13 @@
 ---
 name: security-ci-scanning
 description: >
-  Sets up automated security scanning in a CI/CD pipeline: dependency
-  (SCA) audits, static (SAST) scanning, and dynamic (DAST) scanning of a
-  running API or web app. Use when asked to add security scanning to CI,
-  wire up a vulnerability scanner such as Dependabot, CodeQL, Semgrep,
-  OWASP ZAP or StackHawk, or automate what security-code-review does by
-  hand. Do not use for a one-off manual code review (security-code-review)
-  or for infrastructure and network configuration.
+  Use when asked to add security scanning to CI, wire up a vulnerability scanner
+  such as Dependabot, CodeQL, Semgrep, OWASP ZAP or StackHawk, or automate what
+  security-code-review does by hand. Sets up automated security scanning in a
+  CI/CD pipeline: dependency (SCA) audits, static (SAST) scanning, and dynamic
+  (DAST) scanning of a running API or web app. Do not use for a one-off manual
+  code review (security-code-review) or for infrastructure and network
+  configuration.
 ---
 
 # Security CI Scanning
