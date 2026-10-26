@@ -189,12 +189,23 @@ def validate():
     return errors
 
 
+def user_only_skills():
+    """Skills a person starts by name (disable-model-invocation: true). They take no triggering tests."""
+    out = set()
+    for d in skill_dirs():
+        fm, _ = parse(d / "SKILL.md")
+        if fm and fm.get("disable-model-invocation", "").lower() == "true":
+            out.add(d.name)
+    return out
+
+
 def validate_triggers(names):
     """Triggering tests: each skill needs obvious, paraphrase and unrelated queries."""
     if not TRIGGERS.exists():
         return ["evals/triggers.jsonl missing"]
     errors = []
-    seen = {n: set() for n in names}
+    user_only = user_only_skills()
+    seen = {n: set() for n in names if n not in user_only}
     for i, line in enumerate(TRIGGERS.read_text(encoding="utf-8").splitlines(), 1):
         if not line.strip():
             continue
@@ -204,6 +215,11 @@ def validate_triggers(names):
             errors.append(f"evals/triggers.jsonl:{i}: invalid JSON")
             continue
         skill, kind = case.get("skill"), case.get("type")
+        if skill in user_only:
+            errors.append(
+                f"evals/triggers.jsonl:{i}: {skill} is user-only (disable-model-invocation); remove its trigger queries"
+            )
+            continue
         if skill not in seen:
             errors.append(f"evals/triggers.jsonl:{i}: unknown skill {skill}")
         elif kind not in TRIGGER_TYPES:
