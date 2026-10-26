@@ -4,6 +4,8 @@ All notable changes to this plugin are listed here, newest first. Add new notes 
 
 ## [Unreleased]
 
+- The validator now checks the Codex manifests (`plugin.json`, `.agents/plugins/marketplace.json`) against the Claude ones.
+
 - Added triggering tests (`evals/triggers.jsonl`): every skill has an obvious, a paraphrase and an unrelated query, checked by the validator and exported as `tool_used` graders.
 - The always-on rules now default to `auto`, so they load only in projects that match the markers.
 - Moved Hard rules to the top of every skill, above the gate.

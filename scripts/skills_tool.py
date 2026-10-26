@@ -39,6 +39,8 @@ PLACEHOLDER_FILES = (
     "evals/triggers.jsonl",
     ".claude-plugin/plugin.json",
     ".claude-plugin/marketplace.json",
+    "plugin.json",
+    ".agents/plugins/marketplace.json",
 )
 TEXT_EXTENSIONS = {
     ".md",
@@ -627,6 +629,72 @@ def catalogue(write):
     return ["README.md: catalogue stale; run `python scripts/skills_tool.py catalogue`"]
 
 
+def validate_portable_plugin():
+    errors = []
+    manifest = ROOT / "plugin.json"
+    market = ROOT / ".agents" / "plugins" / "marketplace.json"
+    if not manifest.exists():
+        return ["plugin.json missing"]
+    data, err = load_json(manifest)
+    if err:
+        return [err]
+    claude, claude_err = load_json(PLUGIN_DIR / "plugin.json")
+    if claude_err:
+        return [claude_err]
+    for key in ("name", "version", "license"):
+        if data.get(key) != claude.get(key):
+            errors.append(f"plugin.json: {key} differs from .claude-plugin/plugin.json")
+    if not data.get("description"):
+        errors.append("plugin.json: description is required")
+    if (data.get("author") or {}).get("name") != (claude.get("author") or {}).get(
+        "name"
+    ):
+        errors.append(
+            "plugin.json: author.name differs from .claude-plugin/plugin.json"
+        )
+    if not market.exists():
+        return errors + [".agents/plugins/marketplace.json missing"]
+    mdata, err = load_json(market)
+    if err:
+        return errors + [err]
+    if not mdata.get("name"):
+        errors.append(".agents/plugins/marketplace.json: name is required")
+    entries = mdata.get("plugins")
+    if not isinstance(entries, list) or len(entries) != 1:
+        errors.append(
+            ".agents/plugins/marketplace.json: plugins must hold exactly one entry (this repo)"
+        )
+    else:
+        entry = entries[0]
+        if entry.get("name") != data.get("name"):
+            errors.append(
+                ".agents/plugins/marketplace.json: plugin entry name differs from plugin.json name"
+            )
+        source = entry.get("source") or {}
+        if source.get("source") != "local" or source.get("path") != "./":
+            errors.append(
+                '.agents/plugins/marketplace.json: plugin source must be local and use "./"'
+            )
+        policy = entry.get("policy") or {}
+        if policy.get("installation") not in {
+            "AVAILABLE",
+            "INSTALLED_BY_DEFAULT",
+            "NOT_AVAILABLE",
+        }:
+            errors.append(
+                ".agents/plugins/marketplace.json: plugin installation policy is invalid"
+            )
+        if policy.get("authentication") not in {"ON_INSTALL", "ON_FIRST_USE"}:
+            errors.append(
+                ".agents/plugins/marketplace.json: plugin authentication policy is invalid"
+            )
+        if not entry.get("category"):
+            errors.append(
+                ".agents/plugins/marketplace.json: plugin category is required"
+            )
+    return errors
+
+
 def validate_always_on():
     hooks_dir = ROOT / "hooks"
     config_path = hooks_dir / "always-on.config.json"
@@ -715,6 +783,7 @@ def main():
         errors += validate_agent_sources()
         errors += validate_agent_contents()
         errors += validate_plugin()
+        errors += validate_portable_plugin()
         errors += validate_always_on()
         errors += dashes()
         errors += strip_terms()
