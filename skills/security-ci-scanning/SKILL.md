@@ -20,6 +20,7 @@ Stance: scanning should match what the repository actually is; a library gets de
 - Never invent a host, API key, or secret value. Mechanism: leave a clearly marked TODO and name exactly which secret the user must add, and where. Reason: a guessed value that looks plausible is worse than an obvious gap.
 - Do not set up dynamic scanning against a repository with no server or API surface. Mechanism: check for server/API framework code, routes and a deployment config first. Reason: DAST testing a library produces false reassurance, not findings.
 - State plainly when a detected host, framework or auth type is uncertain, and offer the user a choice instead of picking one silently. Mechanism: list what was detected and what still needs input in the pull request description. Reason: a wrong guess here breaks the pipeline rather than just under-scanning.
+- Act only on what the user asked. Before answering or changing anything, open the relevant files and check what is already done; report only what you checked, never guess, and do not redo finished work. Reason: guesses and repeated work waste the user's credit.
 
 ## Agent dispatch
 

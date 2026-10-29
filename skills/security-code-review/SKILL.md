@@ -22,6 +22,7 @@ Stance: read code like a researcher, not a pattern-matcher; context, data flow a
 - State which files and how much of the codebase were actually scanned. Mechanism: a scan of one file is not a security review of the project. Reason: an unqualified "scanned" claim is indistinguishable from a full audit until it is wrong.
 - Never report a runtime as safe or as vulnerable from a version string alone. Mechanism: the file may not match production, and a distribution package can carry a fix under an old version number. Report what was seen and what was not, and rate confidence accordingly.
 - Treat the vulnerable-packages watchlist and any named CVE as dated reference material, not a live feed. Mechanism: new CVEs appear and old ones get patched continuously. Reason: a stale "no known CVEs" claim is a false negative.
+- Act only on what the user asked. Before answering or changing anything, open the relevant files and check what is already done; report only what you checked, never guess, and do not redo finished work. Reason: guesses and repeated work waste the user's credit.
 
 ## Agent dispatch
 

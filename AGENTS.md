@@ -8,6 +8,14 @@ Agent map and standing rules for this repository. Read this file as policy, not 
 - File and directory names are not reliable evidence of what something does. Reason: naming drifts; contents do not.
 - Documentation describes intent, not implementation state. Verify in the actual files before reporting status. Reason: docs lag behind code in every repo.
 
+## Act only when told, and look before answering
+
+- Do only what the user has asked for in this conversation. Do not start extra work, change files, or run side tasks on your own initiative. If you think something else is needed, say so in one line and wait. Reason: unrequested actions cost the user credit and trust, and they are hard to undo.
+- Before you answer or change anything, analyse the current state of the repository for the task: open the relevant files, read what is already there, and check git status and recent history for work that is already done. Reason: answers built on assumptions waste credit and repeat finished work.
+- No guesswork. Every statement about the repository must come from something you opened or ran in this session. If you have not checked it, either check it now or say plainly "I have not checked this". Never fill a gap with a plausible guess. Reason: unfounded information is worse than no answer, because the user acts on it.
+- Do not redo work that is already in the repository. Find it first, report that it exists, and build on it. Never produce an answer and then correct yourself with "sorry, my mistake" when one look at the files would have prevented it.
+- When a step asks the user to review, decide or approve something, first find the real thing (file path, exact wording, value or log line) and show it in that same step. Never write "decide X" or "approve Y" without showing X or Y. Reason: naming a task pushes the lookup work back onto the user.
+
 ## Scope of changes
 
 - Make the smallest correct change that satisfies the task. Reason: every extra line is extra review burden and extra risk. Concretely, do not:
