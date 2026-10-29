@@ -4,6 +4,10 @@ All notable changes to this plugin are listed here, newest first. Add new notes 
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-29
+
+- Added the rule to act only when told and to analyse the repo before answering: no guesswork, no redoing finished work, and show the real artifact when asking the user to review or approve. It is in AGENTS.md and as a hard-rule bullet in every skill.
+
 ## [0.3.0] - 2026-10-26
 
 - The validator now checks the Codex manifests (`plugin.json`, `.agents/plugins/marketplace.json`) against the Claude ones.
