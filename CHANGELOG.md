@@ -4,6 +4,10 @@ All notable changes to this plugin are listed here, newest first. Add new notes 
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-05
+
+- Added a Works with other repos section to the router skill and README: it names the repos this one depends on or is relied on by, and when to hand off. Marketing comes first in the decision order (marketing, then look and feel, then the technical work). The map is in skills-repos-dependency-map.md beside the repos.
+
 ## [0.4.0] - 2026-10-29
 
 - Added the rule to act only when told and to analyse the repo before answering: no guesswork, no redoing finished work, and show the real artifact when asking the user to review or approve. It is in AGENTS.md and as a hard-rule bullet in every skill.
