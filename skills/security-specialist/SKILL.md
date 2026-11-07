@@ -56,6 +56,7 @@ Other repos depend on this one for security review.
 | Repo or skill | Relationship | Hand off when |
 |---|---|---|
 | django-api-architect | It depends on this repo | Back-end work that touches authentication, secrets or dependencies is reviewed with this repo's skills. |
+| kinwise-analytics | It depends on this repo | Analytics access, exports or stored results raise a security or privacy question. |
 
 If a companion plugin is not installed, say the hand-off was skipped. Never edit another repo's code or rules from here.
 
